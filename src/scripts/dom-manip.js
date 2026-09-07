@@ -10,13 +10,16 @@ function renderPlayer() {
 
   const playerContainer = document.createElement('div');
   playerContainer.classList.add('player-container');
-
+  if(mySquad.length === 0) {
+    const emptyMessage = document.createElement('p');
+    emptyMessage.textContent = 'Your squad is empty. Add some players!';
+    playerContainer.appendChild(emptyMessage);
+  } else {
+    const title = document.createElement('h2');
+    title.textContent = 'My Players';
+    playerContainer.appendChild(title);
+  }
   mySquad.forEach(country => {
-    if (country.players.length === 0) {
-      const emptyMessage = document.createElement('p');
-      emptyMessage.textContent = `No players in ${country.name}. Add some players!`;
-      playerContainer.appendChild(emptyMessage);
-    } else {
       country.players.forEach(player => {
         const playerCard = document.createElement('div');
         playerCard.classList.add('player-card');
@@ -37,9 +40,107 @@ function renderPlayer() {
         countryName.textContent = `Country: ${country.name}`;
         playerCard.appendChild(countryName);
 
+        const deleteBtn = document.createElement(`button`);
+        deleteBtn.classList.add(`delete-btn`);
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => {
+          country.removePlayer(player.id);
+          saveData(getMySquad());
+          renderPlayer();
+        });
+
+        const editPlayer = document.createElement(`button`);
+        editPlayer.classList.add(`edit-btn`);
+        editPlayer.textContent = 'Edit';
+        editPlayer.addEventListener('click', () => {
+          const modal = document.createElement('dialog');
+          modal.classList.add('edit-player-modal');
+          const form = document.createElement('form');
+          form.method = 'dialog';
+          form.classList.add('edit-player-form');
+
+          const heading = document.createElement('h2');
+          heading.textContent = 'Edit Player';
+          form.appendChild(heading);
+
+          const createInput = (labelText, name, type, value, attributes = {}) => {
+            const label = document.createElement('label');
+            label.appendChild(document.createTextNode(labelText));
+            const input = document.createElement('input');
+            input.name = name;
+            input.type = type;
+            input.value = value ?? '';
+            Object.entries(attributes).forEach(([attribute, attributeValue]) => {
+              input.setAttribute(attribute, attributeValue);
+            });
+            label.appendChild(input);
+            form.appendChild(label);
+          };
+
+          createInput('Name', 'name', 'text', player.name, { required: '' });
+          createInput('Age', 'age', 'number', player.age, { min: '1', required: '' });
+          createInput('Position', 'position', 'text', player.position, { required: '' });
+          createInput('Level', 'level', 'number', player.level, { min: '1', required: '' });
+          createInput(
+            'Expiration date',
+            'expirationDate',
+            'date',
+            player.expirationDate,
+            { required: '' }
+          );
+
+          const buttonContainer = document.createElement('div');
+          const cancelButton = document.createElement('button');
+          cancelButton.addEventListener('click', () => {
+            modal.close();
+            modal.remove();
+          });
+          cancelButton.type = 'button';
+          cancelButton.value = 'cancel';
+          cancelButton.textContent = 'Cancel';
+          const saveButton = document.createElement('button');
+          saveButton.type = 'submit';
+          saveButton.value = 'save';
+          saveButton.textContent = 'Save';
+          buttonContainer.append(cancelButton, saveButton);
+          form.appendChild(buttonContainer);
+          modal.appendChild(form);
+
+          document.body.appendChild(modal);
+          form.addEventListener('submit', event => {
+            event.preventDefault();
+            if (event.submitter.value !== 'save') {
+              modal.close();
+              modal.remove();
+              return;
+            }
+
+            const formData = new FormData(form);
+            player.updatePlayer(
+              formData.get('name'),
+              formData.get('age'),
+              formData.get('position'),
+              formData.get('level'),
+              formData.get('expirationDate')
+            );
+            // Persist the updated in-memory squad to localStorage.
+            const updatedSquad = getMySquad();
+            saveData(updatedSquad);
+            modal.close();
+            modal.remove();
+            renderPlayer();
+          });
+
+          modal.addEventListener('cancel', () => modal.remove(), { once: true });
+          modal.showModal();
+        });
+
+        playerCard.appendChild(editPlayer);
+        playerCard.appendChild(deleteBtn);
+
         playerContainer.appendChild(playerCard);
       });
-    }
+    
   });
 
   mainContainer.appendChild(playerContainer);

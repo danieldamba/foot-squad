@@ -1,0 +1,128 @@
+@font-face {
+  font-family: 'Sport';
+  src: url('../assets/Microsport-Bold.woff') format('woff'),
+      url('../assets/Microsport-Bold.woff2') format('woff2');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'TextFont';
+  src: url('../assets/CreatoDisplay-Regular.woff') format('woff'), 
+        url('../assets/CreatoDisplay-Regular.woff2') format('woff2');
+  font-weight: normal;
+}
+
+
+body {
+  background-color: #020a00;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  border: none;
+  font-size: 1.4rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  margin: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  padding: 2px 5px;
+  background-color: #00a500;
+  color: #ffffff;
+}
+
+#root {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#main {
+  display: grid;
+  grid-template: 1fr / 1fr 3fr;
+  grid-template-areas:
+    "sidebar main";
+  min-height: 100vh;
+}
+
+#sidebar {
+  grid-area: sidebar;
+  padding: 1rem;
+  display: flex;
+  flex-flow: column;
+  border-right: 1px solid #ffffff55;
+  min-width: 200px;
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--mint-cream);
+  padding: 20px 0;
+  gap: 100px;
+  border-bottom: 1px solid #ffffff59;
+}
+
+#main-content {
+  margin: 10px 20px;
+  color: #ffffff;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #00a500;
+  font-weight: 800;
+  font-family: 'Sport';
+}
+
+.player-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.player-card {
+  background-color: #ffffff11;
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: #ffffff;
+}
+
+dialog {
+  background-color: #ffffff11;
+  padding: 20px;
+  border-radius: 8px;
+  color: #ffffff;
+  max-width: 400px;
+  max-height: fit-content;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+form input, form select {
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
+  background-color: #ffffff22;
+  color: #ffffff;
+}
